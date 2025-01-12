@@ -1,6 +1,7 @@
 # classification-service-monoitoring
 
-This repository implements a complete ML model lifecycle with automated training, serving, and monitoring using Minikube, MLflow, MinIO, and Prometheus.
+This repository implements a inference service that uses a pretrained model for image classification, deploys it, implements basic monitoring functions, and visualizes the 
+results through a web app.
 
 ## Prerequisites
 
