@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+    spec:
+      containers:
+      - name: streamlit
+        image: streamlit-app:latest  # Ensure this matches your locally built image
+        ports:
+        - containerPort: 8501
+        imagePullPolicy: IfNotPresent  # This is good for local images, avoid changing if you're working with Minikube and local images
+
+        
+---       
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-service
+spec:
+  selector:
+    app: streamlit
+  ports:
+  - protocol: TCP
+    port: 8501  # Internal port in the cluster
+    targetPort: 8501  # Port exposed inside the container
+    nodePort: 30003  # Port on the Minikube VM for external access
+  type: NodePort  # Ensures the service is exposed externally

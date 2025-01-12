@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  classification-inference-service
+  labels:
+    app:  classification-inference-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: classification-inference-service
+  template:
+    metadata:
+      labels:
+        app: classification-inference-service
+    spec:
+      containers:
+      - name: classification-inference-service
+        image: classification-inference-service:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        imagePullPolicy: IfNotPresent  # For local images
+
+---
+#service.yaml       
+apiVersion: v1
+kind: Service
+metadata:
+  name: classification-inference-service
+  labels:
+    app: classification-inference-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30002  # This will be accessible from outside
+  selector:
+    app: classification-inference-service
+    
+# service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: inference-service-monitor
+  labels:
+    release: prometheus  # Important: matches the Helm release label
+spec:
+  selector:
+    matchLabels:
+      app: classification-inference-service
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 15s
