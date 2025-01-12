@@ -1,4 +1,4 @@
-# classification-service-monoitoring
+# classification-service-monitoring
 
 This repository implements a inference service that uses a pretrained model for image classification, deploys it, implements basic monitoring functions, and visualizes the 
 results through a web app.
