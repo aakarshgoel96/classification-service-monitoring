@@ -31,6 +31,8 @@ classification-service-monitoring/
 ├── visualisation/
 │   ├── grafana/
 │   │   ├── dashboard.json
+├── tests/
+│   ├── test.py
 ├── namespace.yaml
 ├── Makefile
 └── README.md
@@ -144,12 +146,53 @@ minikube service grafana --url
 
 ## Service Details
 
+### Classification Inference service
+The ResNet50 Inference Service is a high-performance machine learning API built with FastAPI that provides image classification capabilities using the ResNet50-v2 model in ONNX format.
+
+#### Service Endpoints 
+1. Model Information:  (GET /info)
+
+Returns model metadata including:
+Model name
+Input shape specifications
+Available classification labels
+
+2. Single Image Prediction:  (POST /predict)
+
+Accepts single image uploads and returns top-5 classification predictions.
+
+3. Batch Prediction:  (POST /predict_batch)
+
+Processes multiple images simultaneously using base64 encoding.
+
+4. Metrics:  (GET /metrics)
+
+Exposes Prometheus metrics for monitoring.
+  - Counter: Track the total number of requests received by the service.
+  - Histogram: Observe the distribution of response times for requests
+
+```bash
+# Run unit test script with following command
+python tests/test.py
+```
+
+### Streamlit webapp
+
+A Website with functionality to upload images, display predictions, and show visualizations.
+Image Classification: Display the input image along with the predicted 
+class label.
+![Webapp visualisation](visualisation/streamlit-visualisation.PNG)
+
 ### Prometheus
 - Prometheus is an open-source monitoring and alerting toolkit used for storing and querying time series data.
+- Captures metrics from infrence service /metrics endpoint.
 - Access using the URL provided by Minikube service command
 - Default credentials (unless modified in secrets):
   - Username: admin
   - password: prom-admin
+
+![Prometheus Metrics](visualisation/Prometheus_metrics_query.PNG)
+
 
 ### Grafana
 - Grafana is an open-source platform for monitoring and observability. It allows you to visualize data from multiple sources, including Prometheus.
